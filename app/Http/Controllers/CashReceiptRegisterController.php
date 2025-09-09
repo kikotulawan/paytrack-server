@@ -11,14 +11,14 @@ class CashReceiptRegisterController extends Controller
     {
         // Get the date from the request or default to today's date
         $date = $request->input('date', now()->toDateString());
-        $type = $request->input('type'); // Optional payment type filter
+        $natureOfCollection = $request->input('nature_of_collection'); // Optional nature_of_collection filter
 
         // Fetch payments for the specified date
         $query = Payment::with(['user.info', 'natureOfCollection'])
             ->whereDate('payment_date', $date);
 
-        if ($type) {
-            $query->where('type', $type); // Apply type filter if provided
+        if ($natureOfCollection) {
+            $query->where('nature_of_collection', $natureOfCollection); // Apply nature_of_collection filter if provided
         }
 
         $payments = $query->get();
@@ -38,6 +38,9 @@ class CashReceiptRegisterController extends Controller
         $totalDepositOfDay = [
             'date' => $date,
             'total' => $rows->sum('amount'),
+            'lbp_bank_account_number' => $payments->first()->natureOfCollection->lbp_bank_account_number ?? '-',
+            'account_name' => $payments->first()->natureOfCollection->account_name ?? '-',
+            'particular' => $payments->first()->natureOfCollection->particular ?? '-',
         ];
 
         return response()->json([
@@ -51,15 +54,15 @@ class CashReceiptRegisterController extends Controller
         // Get the month and year from the request or default to the current month and year
         $month = $request->input('month', now()->month);
         $year = $request->input('year', now()->year);
-        $type = $request->input('type'); // Optional payment type filter
+        $natureOfCollection = $request->input('nature_of_collection'); // Optional nature_of_collection filter
 
         // Fetch payments for the specified month and year
         $query = Payment::with(['user.info', 'natureOfCollection'])
             ->whereYear('payment_date', $year)
             ->whereMonth('payment_date', $month);
 
-        if ($type) {
-            $query->where('type', $type); // Apply type filter if provided
+        if ($natureOfCollection) {
+            $query->where('nature_of_collection', $natureOfCollection); // Apply nature_of_collection filter if provided
         }
 
         $payments = $query->get();
@@ -82,6 +85,9 @@ class CashReceiptRegisterController extends Controller
                     ];
                 }),
                 'daily_total' => $payments->sum('amount'), // Total amount for the day
+                'lbp_bank_account_number' => $payments->first()->natureOfCollection->lbp_bank_account_number ?? '-',
+                'account_name' => $payments->first()->natureOfCollection->account_name ?? '-',
+                'particular' => $payments->first()->natureOfCollection->particular ?? '-',
             ];
         });
 

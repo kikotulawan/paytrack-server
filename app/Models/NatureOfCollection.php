@@ -11,7 +11,8 @@ class NatureOfCollection extends Model
 
     protected $fillable = [
         'type',
-        'parent',
+        'account_name',
+        'particular',
         'lbp_bank_account_number',
     ];
 

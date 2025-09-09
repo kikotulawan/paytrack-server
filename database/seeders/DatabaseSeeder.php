@@ -79,7 +79,7 @@ class DatabaseSeeder extends Seeder
                     'mode_of_payment' => 'Cash', // Always Cash
                     'reference' => 'REF-' . fake()->unique()->numerify('########'), // Random reference number
                     'nature_of_collection' => $natureOfCollection->type, // Selected nature_of_collection type
-                    'type' => $natureOfCollection->parent, // Parent type from the selected nature_of_collection
+                    'type' => $natureOfCollection->particular, // Parent type from the selected nature_of_collection
                 ]);
             }
         }
@@ -101,7 +101,7 @@ class DatabaseSeeder extends Seeder
                     'mode_of_payment' => 'Cash', // Always Cash
                     'reference' => 'REF-' . fake()->unique()->numerify('########'), // Random reference number
                     'nature_of_collection' => $natureOfCollection->type, // Selected nature_of_collection type
-                    'type' => $natureOfCollection->parent, // Parent type from the selected nature_of_collection
+                    'type' => $natureOfCollection->particular, // Parent type from the selected nature_of_collection
                 ]);
             }
         }

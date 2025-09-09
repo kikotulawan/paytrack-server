@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\NatureOfCollection;
+use App\Models\{NatureOfCollection, Payment};
 use Illuminate\Http\Request;
 
 class NatureOfCollectionController extends Controller
@@ -29,9 +29,10 @@ class NatureOfCollectionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'type' => 'required|string|max:255',
-            'parent' => 'required|string|max:255',
+            'particular' => 'required|string|max:255',
+            'account_name' => 'required|string|max:255',
             'lbp_bank_account_number' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
         ]);
 
         $natureOfCollection = NatureOfCollection::create($request->all());
@@ -66,13 +67,29 @@ class NatureOfCollectionController extends Controller
 
         $request->validate([
             'type' => 'sometimes|required|string|max:255',
-            'parent' => 'sometimes|required|string|max:255',
+            'account_name' => 'sometimes|required|string|max:255',
             'lbp_bank_account_number' => 'sometimes|required|string|max:255',
+            'particular' => 'sometimes|required|string|max:255',
         ]);
 
+        // Store the old type before updating
+        $oldType = $natureOfCollection->type;
+
+        // Update the NatureOfCollection
         $natureOfCollection->update($request->all());
 
-        return response()->json($natureOfCollection);
+         // Get all payments related to the old type and update them
+        $relatedPayments = Payment::where('nature_of_collection', $oldType)->get();
+
+        foreach ($relatedPayments as $payment) {
+            $payment->update(['nature_of_collection' => $natureOfCollection->type]);
+        }
+
+        return response()->json([
+            'message' => 'Nature of Collection updated successfully',
+            'nature_of_collection' => $natureOfCollection,
+            'updated_payments_count' => $relatedPayments->count(),
+        ]);
     }
 
     /**

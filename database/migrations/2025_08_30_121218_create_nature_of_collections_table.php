@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('nature_of_collections', function (Blueprint $table) {
             $table->id();
             $table->string('type');
-            $table->string('parent');
+            $table->string('account_name');
+            $table->string('particular');
             $table->string('lbp_bank_account_number');
             $table->timestamps();
         });
