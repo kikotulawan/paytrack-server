@@ -77,7 +77,7 @@ class CashReceiptRegisterController extends Controller
                     return [
                         'OR' => $payment->or, // Official Receipt Number
                         'payor_name' => $payment->payor_name, // Full name from user->info
-                        'nature_of_collection' => $payment->natureOfCollection->type,
+                        'nature_of_collection' => $payment->natureOfCollection->type ?? $payment->nature_of_collection,
                         'amount' => $payment->amount,
                     ];
                 }),
